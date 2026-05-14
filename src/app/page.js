@@ -1,20 +1,19 @@
 "use client"
 import React, { useState } from "react";
-import { SlSocialSpotify } from "react-icons/sl";
-import { RiHome5Line } from "react-icons/ri";
-import { FaSearch } from "react-icons/fa";
-import { GrInstallOption } from "react-icons/gr";
-import { FaBell } from "react-icons/fa";
-import { TbUsersGroup } from "react-icons/tb";
-import { MdOutlineLibraryBooks } from "react-icons/md";
-import { IoIosAdd } from "react-icons/io";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { CgStack } from "react-icons/cg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useRef, useEffect } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Card from "@/component/card";
 
 export default function Home() {
 
   const [active, setActive] = useState("All");
+  const router = useRouter();
+  const scrollRef = useRef(null);
+  const scrollRef2 = useRef(null);
+  const [showArrows, setShowArrows] = useState(false);
+  const [showArrows2, setShowArrows2] = useState(false);
 
   const artistName = [
     {
@@ -102,7 +101,7 @@ export default function Home() {
   const artist = [
     {
       id: 1,
-      name: "Sunil",
+      name: "Sagar",
       img: "/img3.jpg",
     },
     {
@@ -121,7 +120,6 @@ export default function Home() {
       img: "/img12.jpg"
     },
   ]
-
   const albumData = [
     { id: 1, name: "Sukhbir", img: "/img1.jpg", description: "Punjabi pop legend" },
     { id: 2, name: "Shaan", img: "/img2.jpg", description: "Romantic playback singer" },
@@ -132,6 +130,8 @@ export default function Home() {
     { id: 7, name: "B Park", img: "/img7.jpg", description: "Urban rap producer" },
     { id: 8, name: "Mika Singh", img: "/img8.jpg", description: "High energy performer" },
     { id: 9, name: "Samita", img: "/img9.jpg", description: "Experimental indie vocals" },
+  ];
+  const albumData2 = [
     { id: 10, name: "B Park", img: "/img10.jpg", description: "Modern hip hop" },
     { id: 11, name: "Mika Singh", img: "/img11.jpg", description: "Bollywood pop powerhouse" },
     { id: 12, name: "Samita", img: "/img12.jpg", description: "Soft soulful tunes" },
@@ -140,6 +140,7 @@ export default function Home() {
     { id: 15, name: "Mika Singh", img: "/img15.jpg", description: "Chart topping hits" },
     { id: 16, name: "Samita", img: "/img16.jpg", description: "Emotional vocal storyteller" }
   ];
+
 
   const podcastData = [
     { id: 1, name: "Samita", img: "/img6.jpg", description: "Indie melodic artist" },
@@ -163,36 +164,45 @@ export default function Home() {
     { id: 11, name: "Samita", img: "/img16.jpg", description: "Emotional vocal storyteller" }
   ];
 
-  const renderCards = (album) => {
-    return album.map((album, index) => (
-      <div key={index} className="p-2 rounded-lg hover:bg-gray-700 cursor-pointer text-white">
-        <div className="h-40 relative overflow-hidden">
-          <Image
-            src={album.img}
-            alt={album.name}
-            fill
-            className="object-cover rounded-lg"
-          />
-        </div>
-        <p className="py-1">{album.name}</p>
-        <span>{album.description}</span>
-      </div>
-    ));
-  }
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
 
+    setShowArrows(el.scrollWidth > el.clientWidth);
+  }, [albumData]); // album = your large data array
 
-  const renderContent = () => {
-    switch (active) {
-      case "All":
-        return renderCards(albumData);
-      case "Music":
-        return renderCards(musicData);
-      case "Podcast":
-        return renderCards(podcastData);
-      default:
-        return null;
-    }
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    setShowArrows2(el.scrollWidth > el.clientWidth);
+  }, [albumData2]); // album = your large data array
+
+  const scroll = (direction) => {
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -300 : 300,
+      behavior: "smooth",
+    });
   };
+
+  // const renderCards = (album) => {
+  //   return 
+  //   ));
+  // }
+
+
+  // const renderContent = () => {
+  //   switch (active) {
+  //     case "All":
+  //       return renderCards(albumData);
+  //     case "Music":
+  //       return renderCards(musicData);
+  //     case "Podcast":
+  //       return renderCards(podcastData);
+  //     default:
+  //       return null;
+  //   }
+  // };
 
 
 
@@ -201,49 +211,74 @@ export default function Home() {
 
       <div >
 
-          {/* second div  */}
-          <div className="bg-[#121212] w-full mb-2 rounded-lg overflow-hidden h-[638px]">
-            <div className="h-full overflow-y-auto no-scrollbar">
+        {/* second div  */}
+        <div className="bg-[#121212] w-full mb-2 rounded-lg overflow-hidden h-[638px]">
+          <div className="h-full overflow-y-auto no-scrollbar">
 
-              <div className="bg-[#121212] h-14 fixed rounded-lg z-10 w-[777px]">
+            <div className="bg-[#121212] h-14 fixed rounded-lg z-10 w-[777px]">
 
-                <div className="flex gap-2 mt-4 ml-6 text-white ">
-                  <button onClick={() => setActive("All")} className={` text-black ${active === "All" ? "bg-white" : "bg-transparent text-white"}  py-1 px-4 rounded-3xl cursor-pointer`}>All</button>
-                  <button onClick={() => setActive("Music")} className={` text-black ${active === "Music" ? "bg-white" : "bg-transparent text-white"}  py-1 px-4 rounded-3xl cursor-pointer`}>Music</button>
-                  <button onClick={() => setActive("Podcast")} className={` text-black ${active === "Podcast" ? "bg-white" : "bg-transparent text-white"}  py-1 px-4 rounded-3xl cursor-pointer`}>prodcast</button>
-                </div>
-              </div>
-
-              <div className=" mt-18 ml-6 mr-8 text-white grid grid-cols-4 gap-2">
-                {
-                  artist.map((artist, index) => (
-                    <div key={index} className=" flex cursor-pointer items-center gap-4 bg-gray-600 rounded-lg ">
-                      <div className="h-10 w-10 relative overfolow-hidden">
-                        <Image
-                          src={artist.img}
-                          alt="name"
-                          fill
-                          className="object cover rounded-l-lg"
-                        />
-                      </div>
-                      <p className="text-sm">{artist.name}</p>
-                    </div>
-                  ))
-                }
-
-              </div>
-              <div className="ml-6 mt-2">
-                <p className="text-white text-sm">Made for</p>
-                {/* <h5>{user.name}</h5> */}
-              </div>
-
-              <div className="grid lg:grid-cols-4 ml-6 mt-4">
-
-                {renderContent()}
+              <div className="flex gap-2 mt-4 ml-6 text-white ">
+                <button onClick={() => setActive("All")} className={` text-black ${active === "All" ? "bg-white" : "bg-transparent text-white"}  py-1 px-4 rounded-3xl cursor-pointer`}>All</button>
+                <button onClick={() => setActive("Music")} className={` text-black ${active === "Music" ? "bg-white" : "bg-transparent text-white"}  py-1 px-4 rounded-3xl cursor-pointer`}>Music</button>
+                <button onClick={() => setActive("Podcast")} className={` text-black ${active === "Podcast" ? "bg-white" : "bg-transparent text-white"}  py-1 px-4 rounded-3xl cursor-pointer`}>prodcast</button>
               </div>
             </div>
+
+            <div className=" mt-18 ml-6 mr-8 text-white grid grid-cols-4 gap-2">
+              {
+                artist.map((artist, index) => (
+                  <div key={index} className=" flex cursor-pointer items-center gap-4 bg-gray-600 rounded-lg ">
+                    <div className="h-10 w-10 relative overfolow-hidden">
+                      <Image
+                        src={artist.img}
+                        alt="name"
+                        fill
+                        className="object cover rounded-l-lg"
+                      />
+                    </div>
+                    <p className="text-sm">{artist.name}</p>
+                  </div>
+                ))
+              }
+
+            </div>
+            <div className="ml-6 mt-2 gap-4">
+              <p className="text-white text-sm text-gray-400">Made for</p>
+              <h5 className="font-extrabold text-white text-2xl">Sagar</h5>
+            </div>
+
+            <div className="relative">
+              <div
+                ref={scrollRef}
+                className="flex overflow-x-auto ml-6 mt-4 gap-1 scrollbar-hide"
+              >
+                <Card album={active === "All" ? albumData : active === "Music" ? musicData : podcastData} />
+              </div>
+            </div>
+
+
+            <div className="relative">
+              <div
+                ref={scrollRef2}
+                className=" overflow-x-auto ml-6 mt-4 gap-1 scrollbar-hide"
+              >
+                {/* <Card album={active === "All" ? albumData2 : active === "Music" ? musicData : podcastData} /> */}
+                {
+                  active === "All" ? (
+                    <Card album={albumData2} title={"Your Latest Songs"} />
+                  ) : active === "Music" ? (
+                    <Card album={musicData} title={"Your Latest Musics"}/>
+                  ) : active === "Podcast" ? (
+                    <Card album={podcastData} title={"Your Latest Podcasts"}/>
+                  ) : null
+                }
+              </div>
+            </div>
+
+
           </div>
         </div>
+      </div>
 
     </>
   );
